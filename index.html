@@ -263,6 +263,14 @@
             <!-- Cards will be injected by JavaScript -->
         </div>
 
+        <!-- Load More Button -->
+        <div id="load-more-container" class="flex justify-center pt-8 pb-12">
+            <button id="load-more-btn" class="h-10 px-8 rounded-lg bg-blue-600 dark:bg-blue-700 hover:bg-blue-700 dark:hover:bg-blue-800 text-white text-sm font-semibold shadow-sm hover:shadow transition-all duration-200 flex items-center gap-2">
+                <span>Load More Posts</span>
+                <i data-lucide="chevron-down" class="size-4 animate-bounce"></i>
+            </button>
+        </div>
+
         <!-- Empty State -->
         <div id="empty-state" class="hidden flex flex-col items-center justify-center py-20 text-neutral-500 dark:text-neutral-400 transition-colors">
             <div class="p-4 rounded-full bg-neutral-100 dark:bg-neutral-900 mb-4 border border-neutral-200 dark:border-neutral-800">
@@ -309,7 +317,8 @@
             cols: parseInt(localStorage.getItem('portfolio-cols-v2')) || 2,
             mediaFilter: 'all',
             searchQuery: '',
-            sortBy: 'newest'
+            sortBy: 'newest',
+            visibleCount: 12
         };
 
         // Initialize UI Elements
@@ -319,6 +328,13 @@
             initCols();
             initFilters();
             initModal();
+            
+            // Load More button click handler
+            document.getElementById('load-more-btn').addEventListener('click', () => {
+                state.visibleCount += 12;
+                render();
+            });
+
             render();
             
             // Set input defaults
@@ -431,6 +447,7 @@
                 clearTimeout(searchTimeout);
                 searchTimeout = setTimeout(() => {
                     state.searchQuery = e.target.value.toLowerCase().trim();
+                    state.visibleCount = 12;
                     render();
                 }, 200);
             });
@@ -438,6 +455,7 @@
             // Sort selector handler
             sort.addEventListener('change', (e) => {
                 state.sortBy = e.target.value;
+                state.visibleCount = 12;
                 render();
             });
 
@@ -446,6 +464,7 @@
                 btn.addEventListener('click', () => {
                     const filter = btn.getAttribute('data-media');
                     state.mediaFilter = filter;
+                    state.visibleCount = 12;
 
                     mediaButtons.forEach(b => {
                         if (b.getAttribute('data-media') === filter) {
@@ -571,6 +590,7 @@
             const grid = document.getElementById('posts-grid');
             const emptyState = document.getElementById('empty-state');
             const showingCount = document.getElementById('showing-count');
+            const loadMoreContainer = document.getElementById('load-more-container');
 
             // 1. Filter Posts
             let filtered = POSTS.filter(post => {
@@ -603,17 +623,27 @@
                 return 0;
             });
 
-            showingCount.textContent = `Showing ${filtered.length} of ${POSTS.length} posts`;
+            showingCount.textContent = `Showing ${Math.min(filtered.length, state.visibleCount)} of ${filtered.length} posts`;
 
             if (filtered.length === 0) {
                 grid.innerHTML = '';
                 emptyState.classList.remove('hidden');
+                loadMoreContainer.classList.add('hidden');
                 return;
             }
             emptyState.classList.add('hidden');
 
+            // Toggle Load More button visibility
+            if (filtered.length <= state.visibleCount) {
+                loadMoreContainer.classList.add('hidden');
+            } else {
+                loadMoreContainer.classList.remove('hidden');
+            }
+
+            const visiblePosts = filtered.slice(0, state.visibleCount);
+
             // 3. Generate Cards HTML
-            grid.innerHTML = filtered.map(post => {
+            grid.innerHTML = visiblePosts.map(post => {
                 const urnSafe = post.post_urn ? post.post_urn.replace(/:/g, '-') : Math.random().toString(36).substring(2, 9);
                 const hasLongText = post.post_text && post.post_text.length > 280;
                 
@@ -633,7 +663,7 @@
                     <div class="flex items-start justify-between mb-4">
                         <div class="flex items-center gap-3">
                             <div class="relative flex-shrink-0">
-                                ${profileImg ? `<img src="${profileImg}" alt="${cleanPostAuthor}" class="size-10 rounded-full border border-neutral-200 dark:border-neutral-700 object-cover bg-neutral-200" onerror="this.style.display='none'; this.nextElementSibling.style.display='flex';" referrerpolicy="no-referrer">` : ''}
+                                ${profileImg ? `<img src="${profileImg}" alt="${cleanPostAuthor}" class="size-10 rounded-full border border-neutral-200 dark:border-neutral-700 object-cover bg-neutral-200" onerror="this.style.display='none'; this.nextElementSibling.style.display='flex';" referrerpolicy="no-referrer" loading="lazy">` : ''}
                                 <div class="size-10 rounded-full bg-blue-600 dark:bg-blue-700 text-white font-semibold flex items-center justify-center text-sm" style="${profileImg ? 'display: none;' : ''}">
                                     ${authorInitials}
                                 </div>
@@ -678,7 +708,7 @@
                     </div>
                     ` : (post.has_image && post.post_image_url ? `
                     <div class="post-card-image-part mb-4" data-image-url="${post.post_image_url}" onclick="openImageModal('${post.post_image_url}')">
-                        <img src="${post.post_image_url}" alt="Post attachment image" class="max-w-full max-h-[360px] object-cover hover:scale-[1.02] transition-transform duration-300">
+                        <img src="${post.post_image_url}" alt="Post attachment image" class="max-w-full max-h-[360px] object-cover hover:scale-[1.02] transition-transform duration-300" loading="lazy">
                     </div>
                     ` : '')}
 
