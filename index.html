@@ -3,6 +3,9 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate">
+    <meta http-equiv="Pragma" content="no-cache">
+    <meta http-equiv="Expires" content="0">
     <title>Ravi Evani - LinkedIn Posts Portfolio</title>
     <!-- Tailwind CSS Play CDN -->
     <script src="https://cdn.tailwindcss.com"></script>
@@ -303,7 +306,7 @@
         // Configuration State
         const state = {
             theme: localStorage.getItem('portfolio-theme') || 'light',
-            cols: parseInt(localStorage.getItem('portfolio-cols')) || 2,
+            cols: parseInt(localStorage.getItem('portfolio-cols-v2')) || 2,
             mediaFilter: 'all',
             searchQuery: '',
             sortBy: 'newest'
@@ -379,7 +382,7 @@
             
             function setCols(n) {
                 state.cols = n;
-                localStorage.setItem('portfolio-cols', n);
+                localStorage.setItem('portfolio-cols-v2', n);
                 
                 // Update buttons UI
                 colButtons.forEach(btn => {
