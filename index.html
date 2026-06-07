@@ -538,12 +538,14 @@
                     icons.push('thumbs-up');
                 } else if (type.includes('EMPATHY') || type.includes('LOVE')) {
                     icons.push('heart');
-                } else if (type.includes('INTEREST') || type.includes('CURIOSITY')) {
+                } else if (type.includes('INTEREST') || type.includes('CURIOSITY') || type.includes('INSIGHTFUL')) {
                     icons.push('lightbulb');
-                } else if (type.includes('PRAISE') || type.includes('APPRECIATION')) {
-                    icons.push('award');
+                } else if (type.includes('PRAISE') || type.includes('APPRECIATION') || type.includes('CELEBRATE')) {
+                    icons.push('party-popper');
                 } else if (type.includes('ENTERTAINMENT') || type.includes('LAUGH') || type.includes('FUNNY')) {
-                    icons.push('smile');
+                    icons.push('laugh');
+                } else if (type.includes('SUPPORT')) {
+                    icons.push('hand-heart');
                 }
             }
             const uniqueIcons = [...new Set(icons)];
