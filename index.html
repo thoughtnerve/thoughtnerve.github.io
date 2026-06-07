@@ -329,11 +329,26 @@
             initFilters();
             initModal();
             
-            // Load More button click handler
+            // Load More button click handler (fallback)
             document.getElementById('load-more-btn').addEventListener('click', () => {
                 state.visibleCount += 12;
                 render();
             });
+
+            // Auto-load on scroll observer
+            try {
+                const observer = new IntersectionObserver((entries) => {
+                    if (entries[0].isIntersecting && !document.getElementById('load-more-container').classList.contains('hidden')) {
+                        state.visibleCount += 12;
+                        render();
+                    }
+                }, {
+                    rootMargin: '200px'
+                });
+                observer.observe(document.getElementById('load-more-container'));
+            } catch (e) {
+                console.error("IntersectionObserver not supported:", e);
+            }
 
             render();
             
