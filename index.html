@@ -703,7 +703,7 @@
                     <!-- Card Body -->
                     ${post.post_text ? `
                     <div class="post-card-text-part ${!(post.post_image_url || post.video_url) ? 'post-card-text-expanded' : ''} mb-4">
-                        <div class="text-base text-neutral-700 dark:text-neutral-300 leading-relaxed font-light break-words">
+                        <div class="text-sm text-neutral-700 dark:text-neutral-300 leading-relaxed font-light break-words">
                             ${formatPostText(post.post_text)}
                         </div>
                     </div>
