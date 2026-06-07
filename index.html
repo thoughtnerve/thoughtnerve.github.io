@@ -15,7 +15,7 @@
             theme: {
                 extend: {
                     fontFamily: {
-                        sans: ['Inter', 'sans-serif'],
+                        sans: ['var(--font-sans)', 'sans-serif'],
                     },
                     colors: {
                         neutral: {
@@ -26,14 +26,14 @@
             }
         }
     </script>
-    <!-- Google Fonts: Inter -->
-    <link rel="preconnect" href="https://fonts.googleapis.com">
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
     
     <style>
+        :root {
+            --font-sans: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+        }
+
         body {
-            font-family: 'Inter', sans-serif;
+            font-family: var(--font-sans);
             transition: background-color 0.3s, color 0.3s;
         }
         
@@ -710,8 +710,28 @@
                     </div>
                     ` : ''}
 
-                    <!-- Post Media (Images or Videos) -->
-                    ${post.is_video && post.video_url ? `
+                    <!-- Post Media (Images, Videos, or Articles) -->
+                    ${(post.is_article || post.article_url) ? `
+                    <a href="${post.article_url}" target="_blank" rel="noopener noreferrer" class="block border border-neutral-200 dark:border-neutral-800 rounded-xl overflow-hidden bg-neutral-50 dark:bg-neutral-900/50 hover:bg-neutral-100 dark:hover:bg-neutral-900 transition-colors mb-4 group/article">
+                        ${post.post_image_url ? `
+                        <div class="h-48 overflow-hidden border-b border-neutral-200 dark:border-neutral-800">
+                            <img src="${post.post_image_url}" class="w-full h-full object-cover group-hover/article:scale-105 transition-transform duration-300" loading="lazy" referrerpolicy="no-referrer">
+                        </div>
+                        ` : ''}
+                        <div class="p-4">
+                            <div class="flex items-center gap-1.5 text-xs text-neutral-500 dark:text-neutral-500 mb-1">
+                                <i data-lucide="link" class="size-3"></i>
+                                <span>${post.article_url ? new URL(post.article_url).hostname : 'External Link'}</span>
+                            </div>
+                            <h4 class="text-sm font-semibold text-neutral-800 dark:text-white line-clamp-2 mb-1 group-hover/article:text-blue-500 transition-colors">
+                                ${post.article_title || 'View Article'}
+                            </h4>
+                            <p class="text-xs text-neutral-500 dark:text-neutral-500 line-clamp-2">
+                                ${post.article_description || ''}
+                            </p>
+                        </div>
+                    </a>
+                    ` : (post.is_video && post.video_url) ? `
                     <div class="post-card-image-part mb-4" data-image-url="${post.video_url}" onclick="window.open('${post.post_url || '#'}', '_blank')">
                         <img src="${post.post_image_url || ''}" alt="Post Media" loading="lazy" referrerpolicy="no-referrer">
                         <div class="video-overlay">
@@ -721,11 +741,11 @@
                             <div class="absolute bottom-2 right-2 bg-black/60 backdrop-blur-sm text-white text-[10px] px-1.5 py-0.5 rounded font-medium">VIDEO</div>
                         </div>
                     </div>
-                    ` : (post.has_image && post.post_image_url ? `
+                    ` : (post.has_image && post.post_image_url) ? `
                     <div class="post-card-image-part mb-4" data-image-url="${post.post_image_url}" onclick="openImageModal('${post.post_image_url}')">
                         <img src="${post.post_image_url}" alt="Post attachment image" class="max-w-full max-h-[360px] object-cover hover:scale-[1.02] transition-transform duration-300" loading="lazy">
                     </div>
-                    ` : '')}
+                    ` : ''}
 
                     <!-- Card Footer (Interactions/Engagement metrics) -->
                     <div class="flex items-center justify-between border-t border-neutral-200 dark:border-neutral-800 pt-4 mt-auto">
