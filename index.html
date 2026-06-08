@@ -749,16 +749,29 @@
                     </div>
 
                     <!-- Card Body -->
-                    ${post.post_text ? `
-                    <div class="relative mb-4">
-                        <div class="post-card-text-part ${!(post.post_image_url || post.video_url) ? 'post-card-text-expanded' : ''} pr-1" onscroll="updateTextScroll(this)">
-                            <div class="text-sm text-neutral-700 dark:text-neutral-300 leading-relaxed font-light break-words">
-                                ${formatPostText(post.post_text)}
+                    ${post.post_text ? (() => {
+                        const hasMedia = post.post_image_url || post.has_image || post.is_video || post.is_article || post.article_url;
+                        if (hasMedia) {
+                            return `
+                            <div class="relative mb-4">
+                                <div class="post-card-text-part pr-1" onscroll="updateTextScroll(this)">
+                                    <div class="text-sm text-neutral-700 dark:text-neutral-300 leading-relaxed font-light break-words">
+                                        ${formatPostText(post.post_text)}
+                                    </div>
+                                </div>
+                                <div class="scroll-fade-indicator absolute bottom-0 left-0 right-0 h-8 pointer-events-none transition-opacity duration-300 opacity-0 z-10"></div>
                             </div>
-                        </div>
-                        <div class="scroll-fade-indicator absolute bottom-0 left-0 right-0 h-8 pointer-events-none transition-opacity duration-300 opacity-0 z-10"></div>
-                    </div>
-                    ` : ''}
+                            `;
+                        } else {
+                            return `
+                            <div class="mb-4">
+                                <div class="text-sm text-neutral-700 dark:text-neutral-300 leading-relaxed font-light break-words">
+                                    ${formatPostText(post.post_text)}
+                                </div>
+                            </div>
+                            `;
+                        }
+                    })() : ''}
 
                     <!-- Post Media (Images, Videos, or Articles) -->
                     ${(post.is_article || post.article_url) ? `
