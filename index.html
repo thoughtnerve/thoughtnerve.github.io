@@ -56,6 +56,14 @@
             background: #404040;
         }
 
+        /* Scroll fade indicator for overflow text */
+        .scroll-fade-indicator {
+            background: linear-gradient(to top, rgba(255, 255, 255, 0.95), rgba(255, 255, 255, 0));
+        }
+        .dark .scroll-fade-indicator {
+            background: linear-gradient(to top, rgba(10, 10, 10, 0.95), rgba(10, 10, 10, 0));
+        }
+
         /* Glassmorphism & premium UI utilities */
         .glass-card {
             backdrop-filter: blur(12px);
@@ -623,6 +631,22 @@
             }
         }
 
+        // Helper: Update scroll fade indicators for overflow text
+        window.updateTextScroll = function(el) {
+            const isScrollable = el.scrollHeight > el.clientHeight + 4;
+            const isAtBottom = el.scrollHeight - el.scrollTop <= el.clientHeight + 4;
+            const fade = el.nextElementSibling;
+            if (fade) {
+                if (isScrollable && !isAtBottom) {
+                    fade.classList.remove('opacity-0');
+                    fade.classList.add('opacity-100');
+                } else {
+                    fade.classList.remove('opacity-100');
+                    fade.classList.add('opacity-0');
+                }
+            }
+        }
+
         // Render Cards Loop
         function render() {
             const grid = document.getElementById('posts-grid');
@@ -726,10 +750,13 @@
 
                     <!-- Card Body -->
                     ${post.post_text ? `
-                    <div class="post-card-text-part ${!(post.post_image_url || post.video_url) ? 'post-card-text-expanded' : ''} mb-4">
-                        <div class="text-sm text-neutral-700 dark:text-neutral-300 leading-relaxed font-light break-words">
-                            ${formatPostText(post.post_text)}
+                    <div class="relative mb-4">
+                        <div class="post-card-text-part ${!(post.post_image_url || post.video_url) ? 'post-card-text-expanded' : ''} pr-1" onscroll="updateTextScroll(this)">
+                            <div class="text-sm text-neutral-700 dark:text-neutral-300 leading-relaxed font-light break-words">
+                                ${formatPostText(post.post_text)}
+                            </div>
                         </div>
+                        <div class="scroll-fade-indicator absolute bottom-0 left-0 right-0 h-8 pointer-events-none transition-opacity duration-300 opacity-0 z-10"></div>
                     </div>
                     ` : ''}
 
@@ -810,6 +837,13 @@
             }).join('');
 
             lucide.createIcons();
+
+            // Trigger check for overflow text scrollable indicators after rendering
+            setTimeout(() => {
+                document.querySelectorAll('.post-card-text-part').forEach(el => {
+                    updateTextScroll(el);
+                });
+            }, 100);
         }
     </script>
 </body>
