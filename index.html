@@ -7,6 +7,21 @@
     <meta http-equiv="Pragma" content="no-cache">
     <meta http-equiv="Expires" content="0">
     <title>Ravi Evani - Posts</title>
+    <!-- Google Analytics -->
+    <script>
+        const GA_ID = '__GA_MEASUREMENT_ID__';
+        if (GA_ID && GA_ID !== 'null' && GA_ID !== 'undefined' && GA_ID.startsWith('G-')) {
+            const gaScript = document.createElement('script');
+            gaScript.async = true;
+            gaScript.src = `https://www.googletagmanager.com/gtag/js?id=${GA_ID}`;
+            document.head.appendChild(gaScript);
+
+            window.dataLayer = window.dataLayer || [];
+            function gtag(){dataLayer.push(arguments);}
+            gtag('js', new Date());
+            gtag('config', GA_ID);
+        }
+    </script>
     <!-- Tailwind CSS Play CDN -->
     <script src="https://cdn.tailwindcss.com"></script>
     <script>
