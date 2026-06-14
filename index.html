@@ -274,10 +274,10 @@
                     <button data-cols="1" class="col-btn h-7 w-7 flex items-center justify-center rounded-md text-neutral-500 dark:text-neutral-400 hover:text-neutral-900 dark:hover:text-white transition-colors" title="1 Column View">
                         <i data-lucide="square" class="size-4"></i>
                     </button>
-                    <button data-cols="2" class="col-btn h-7 w-7 flex items-center justify-center rounded-md transition-colors bg-white dark:bg-neutral-800 shadow-sm text-neutral-900 dark:text-white" title="2 Columns View">
+                    <button data-cols="2" class="col-btn h-7 w-7 flex items-center justify-center rounded-md text-neutral-500 dark:text-neutral-400 hover:text-neutral-900 dark:hover:text-white transition-colors" title="2 Columns View">
                         <i data-lucide="columns-2" class="size-4"></i>
                     </button>
-                    <button data-cols="3" class="col-btn h-7 w-7 flex items-center justify-center rounded-md text-neutral-500 dark:text-neutral-400 hover:text-neutral-900 dark:hover:text-white transition-colors" title="3 Columns View">
+                    <button data-cols="3" class="col-btn h-7 w-7 flex items-center justify-center rounded-md transition-colors bg-white dark:bg-neutral-800 shadow-sm text-neutral-900 dark:text-white" title="3 Columns View">
                         <i data-lucide="columns-3" class="size-4"></i>
                     </button>
                 </div>
@@ -340,7 +340,7 @@
         // Configuration State
         const state = {
             theme: localStorage.getItem('portfolio-theme') || 'light',
-            cols: parseInt(localStorage.getItem('portfolio-cols-v2')) || 2,
+            cols: parseInt(localStorage.getItem('portfolio-cols-v2')) || 3,
             mediaFilter: 'all',
             searchQuery: '',
             sortBy: 'newest',
