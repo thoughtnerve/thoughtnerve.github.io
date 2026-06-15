@@ -601,7 +601,7 @@
 
         // Helper: Format Dates Beautifully
         function formatDate(dateStr) {
-            if (!dateStr) return 'Recent Post';
+            if (!dateStr) return '';
             try {
                 const options = { year: 'numeric', month: 'short', day: 'numeric' };
                 const date = new Date(dateStr);
