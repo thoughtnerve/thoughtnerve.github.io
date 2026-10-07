@@ -222,7 +222,7 @@
 
     <!-- Top Navigation Bar -->
     <header class="sticky top-0 z-30 border-b border-neutral-200 dark:border-neutral-800/80 bg-white/80 dark:bg-neutral-950/80 backdrop-blur-md transition-colors">
-        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 h-16 flex items-center justify-between gap-4">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 min-h-16 py-3 sm:py-0 flex flex-wrap sm:flex-nowrap items-center justify-between gap-3 sm:gap-4">
             <!-- Search Bar (Left - expanding) -->
             <div class="flex-1 min-w-0">
                 <div class="relative w-full">
@@ -232,24 +232,18 @@
             </div>
 
             <!-- Filters & Sort Group (Middle/Right) -->
-            <div class="flex items-center gap-2 shrink-0">
-                <!-- Media Filters (Icons with Tooltips) -->
-                <div class="hidden h-9 flex items-center gap-0.5 bg-neutral-100 dark:bg-neutral-900 p-1 rounded-lg border border-neutral-200 dark:border-neutral-800">
-                    <button data-media="all" class="media-btn h-7 w-7 flex items-center justify-center rounded-md transition-all text-neutral-900 dark:text-white bg-white dark:bg-neutral-800 shadow-sm" title="All Posts">
-                        <i data-lucide="layers" class="size-4"></i>
-                    </button>
-                    <button data-media="images" class="media-btn h-7 w-7 flex items-center justify-center rounded-md transition-all text-neutral-500 dark:text-neutral-400 hover:text-neutral-900 dark:hover:text-white" title="Images">
-                        <i data-lucide="image" class="size-4"></i>
-                    </button>
-                    <button data-media="videos" class="media-btn h-7 w-7 flex items-center justify-center rounded-md transition-all text-neutral-500 dark:text-neutral-400 hover:text-neutral-900 dark:hover:text-white" title="Videos">
-                        <i data-lucide="video" class="size-4"></i>
-                    </button>
-                    <button data-media="text" class="media-btn h-7 w-7 flex items-center justify-center rounded-md transition-all text-neutral-500 dark:text-neutral-400 hover:text-neutral-900 dark:hover:text-white" title="Text Only">
-                        <i data-lucide="file-text" class="size-4"></i>
-                    </button>
+            <div class="order-3 sm:order-none w-full sm:w-auto flex items-center gap-2 shrink-0">
+                <!-- Media Filter -->
+                <div class="flex-1 sm:flex-none sm:w-32">
+                    <select id="media-select" aria-label="Filter posts by media type" class="w-full h-9 bg-neutral-100 dark:bg-neutral-900 border border-neutral-200 dark:border-neutral-800 text-xs text-neutral-700 dark:text-neutral-300 rounded-lg px-2 focus:outline-none focus:ring-1 focus:ring-blue-500 focus:border-blue-500 transition-all cursor-pointer font-medium">
+                        <option value="all">All posts</option>
+                        <option value="videos">Video posts</option>
+                        <option value="images">Images</option>
+                        <option value="text">Text only</option>
+                    </select>
                 </div>
                 <!-- Sort Control -->
-                <div class="w-28 sm:w-32">
+                <div class="flex-1 sm:flex-none sm:w-32">
                     <select id="sort-select" class="w-full h-9 bg-neutral-100 dark:bg-neutral-900 border border-neutral-200 dark:border-neutral-800 text-xs text-neutral-700 dark:text-neutral-300 rounded-lg px-2 focus:outline-none focus:ring-1 focus:ring-blue-500 focus:border-blue-500 transition-all cursor-pointer font-medium">
                         <option value="newest">Newest</option>
                         <option value="oldest">Oldest</option>
@@ -521,7 +515,7 @@
         function initFilters() {
             const search = document.getElementById('search-input');
             const sort = document.getElementById('sort-select');
-            const mediaButtons = document.querySelectorAll('[data-media]');
+            const media = document.getElementById('media-select');
 
             // Real-time search handler
             let searchTimeout;
@@ -541,25 +535,12 @@
                 render();
             });
 
-            // Media type button filter handlers
-            mediaButtons.forEach(btn => {
-                btn.addEventListener('click', () => {
-                    const filter = btn.getAttribute('data-media');
-                    state.mediaFilter = filter;
-                    state.visibleCount = 12;
-
-                    mediaButtons.forEach(b => {
-                        if (b.getAttribute('data-media') === filter) {
-                            b.classList.add('bg-white', 'dark:bg-neutral-800', 'shadow-sm', 'text-neutral-900', 'dark:text-white');
-                            b.classList.remove('text-neutral-500', 'dark:text-neutral-400');
-                        } else {
-                            b.classList.remove('bg-white', 'dark:bg-neutral-800', 'shadow-sm', 'text-neutral-900', 'dark:text-white');
-                            b.classList.add('text-neutral-500', 'dark:text-neutral-400');
-                        }
-                    });
-
-                    render();
-                });
+            // Media filter works together with search and sorting.
+            media.value = state.mediaFilter;
+            media.addEventListener('change', (e) => {
+                state.mediaFilter = e.target.value;
+                state.visibleCount = 12;
+                render();
             });
         }
 
